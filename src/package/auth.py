@@ -3,14 +3,10 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from uuid import uuid4
 
-from src.package.utils import get_environ
+from config import EXPIRE_MINUTES, SECRET_KEY, ALGORITHM
 
 
-SECRET_KEY = get_environ("SECRET_KEY")
-EXPIRES_IN = 60 * 24
-ALGORITHM = "HS256"
-SCHEMES = ['bcrypt']
-crypto_context = CryptContext(schemes=SCHEMES, deprecated='auto')
+crypto_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 
 def decode_access_token(token) -> dict | None:
@@ -26,6 +22,6 @@ def create_uuid():
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
-    to_encode.update(exp=datetime.utcnow() + timedelta(minutes=EXPIRES_IN))
+    to_encode.update(exp=datetime.utcnow() + timedelta(minutes=EXPIRE_MINUTES))
     return jwt.encode(claims=data, key=SECRET_KEY, algorithm=ALGORITHM)
 

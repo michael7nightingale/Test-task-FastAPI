@@ -3,23 +3,14 @@ from abc import ABC, abstractmethod
 from sqlalchemy import MetaData, Column, Integer, DateTime, String, Boolean, ForeignKey, select
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.ext.asyncio import create_async_engine, async_session, AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine
 import asyncio
-from dotenv import load_dotenv
-load_dotenv()
 import sys, os
 sys.path.append(os.getcwd())
 
-from src.package.utils import get_environ
-from src.package.hasher import verify_password, hash_password
-from src.package.auth import create_uuid
-
-
-DB_NAME = get_environ('DB_NAME')
-DB_HOST = get_environ("DB_HOST")
-DB_PORT = get_environ("DB_PORT")
-DB_USER = get_environ("DB_USER")
-DB_PASSWORD = get_environ("DB_PASSWORD")
+from package.hasher import verify_password, hash_password
+from package.auth import create_uuid
+from config import (DB_NAME, DB_USER, DB_HOST, DB_PASSWORD, DB_PORT)
 
 
 engine: AsyncEngine = create_async_engine(
@@ -28,6 +19,11 @@ engine: AsyncEngine = create_async_engine(
 metadata = MetaData()
 Session = sessionmaker(bind=engine, class_=AsyncSession, autocommit=False, autoflush=True)
 Base = declarative_base(metadata=metadata)
+
+
+async def create_session():
+    async with Session() as ses:
+        yield ses
 
 
 class User(Base):
@@ -61,13 +57,8 @@ class Employee(Base):
 
 
 class BaseManager(ABC):
-    def __init__(self):
-        # self._session = session
-        ...
-
-    # @property
-    # def session(self):
-    #     return self._session
+    def __init__(self, session_class=Session):
+        self.session_class = session_class
 
     @abstractmethod
     def all(self):
@@ -80,7 +71,7 @@ class BaseManager(ABC):
 
 class UserManager(BaseManager):
     async def login(self, username: str, password: str, *args, **kwargs) -> dict | None:
-        async with Session() as session:
+        async with self.session_class() as session:
             res = await session.execute(select(User).where(User.username == username))
             if res:
                 user = res.first()[0]
@@ -103,14 +94,14 @@ class UserManager(BaseManager):
         return new_user
 
     async def all(self):
-        async with Session() as session:
+        async with self.session_class() as session:
             res = await session.execute(select(User))
             return [i[0].as_dict() for i in res.all()]
 
 
 class EmployeeManager(BaseManager):
     async def all(self) -> list[dict]:
-        async with Session() as session:
+        async with self.session_class() as session:
             res = await session.execute(select(Employee))
             return [i[0].as_dict() for i in res.all()]
 
@@ -121,29 +112,28 @@ class EmployeeManager(BaseManager):
             salary=salary,
             promotion_date=promotion_date
         )
-        async with Session() as session:
+        async with self.session_class() as session:
             session.add(new_employee)
             await session.commit()
         return new_employee
 
     async def get_by_userid(self, user_id: str):
-        async with Session() as session:
+        async with self.session_class() as session:
             res = await session.execute(select(Employee).where(Employee.user_id == user_id))
             if res:
                 employee = res.first()[0]
                 return employee
 
 
-
-async def create_db():
+async def create_db(local_engine: AsyncEngine):
     """Create tables"""
-    async with engine.begin() as conn:
+    async with local_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
 
-async def drop_db():
+async def drop_db(local_engine: AsyncEngine):
     """Drop tables."""
-    async with engine.begin() as conn:
+    async with local_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
 
@@ -166,9 +156,9 @@ async def create_superuser(username: str = "admin",
 
 
 if __name__ == '__main__':
-    # asyncio.run(create_db())
-    # asyncio.run(drop_db())
-    # asyncio.run(create_superuser())
+    # asyncio.run(create_db(engine))
+    # asyncio.run(drop_db(engine))
+    # asyncio.run(create_superuser(engine))
     ...
 
 
