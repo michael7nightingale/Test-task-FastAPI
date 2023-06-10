@@ -3,7 +3,7 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from uuid import uuid4
 
-from package.utils import get_environ
+from src.package.utils import get_environ
 
 
 SECRET_KEY = get_environ("SECRET_KEY")

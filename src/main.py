@@ -1,10 +1,13 @@
 from fastapi import FastAPI
+import uvicorn
 from dotenv import load_dotenv
 load_dotenv()
-import uvicorn
+# the trick just to run both from PyCharm debugger and terminal
+import os, sys
+sys.path.append(os.getcwd())
 
-from internal.api import main_router, auth_router, employee_router
-from package.database import create_superuser
+from src.internal.api import main_router, auth_router, employee_router
+from src.package.database import create_superuser
 
 
 def create_app() -> FastAPI:

@@ -7,10 +7,12 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_session, AsyncSess
 import asyncio
 from dotenv import load_dotenv
 load_dotenv()
+import sys, os
+sys.path.append(os.getcwd())
 
-from package.utils import get_environ
-from package.hasher import verify_password, hash_password
-from package.auth import create_uuid
+from src.package.utils import get_environ
+from src.package.hasher import verify_password, hash_password
+from src.package.auth import create_uuid
 
 
 DB_NAME = get_environ('DB_NAME')
