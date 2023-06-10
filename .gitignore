@@ -1,0 +1,7 @@
+.idea
+venv
+__pycache__
+internal/__pycache__
+package/__pycache__
+tests/__pycache__
+.env
