@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError, PendingRollbackError
 
 from package.auth import decode_access_token, create_access_token
 from package.schemas import UserShow, User, UserInDb, EmployeeInDb, Employee
-from package.database import Session, UserManager, EmployeeManager
+from database.managers import UserManager, EmployeeManager
 
 
 main_router = APIRouter(prefix='')

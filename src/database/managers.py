@@ -1,59 +1,12 @@
 from datetime import datetime
 from abc import ABC, abstractmethod
-from sqlalchemy import MetaData, Column, Integer, DateTime, String, Boolean, ForeignKey, select
-from sqlalchemy.sql import func
-from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine
-import asyncio
-import sys, os
-sys.path.append(os.getcwd())
-
+from sqlalchemy import select
+# import os, sys
+# sys.path.append(os.getcwd())
 from package.hasher import verify_password, hash_password
 from package.auth import create_uuid
-from config import (DB_NAME, DB_USER, DB_HOST, DB_PASSWORD, DB_PORT)
-
-
-engine: AsyncEngine = create_async_engine(
-    url=f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
-)
-metadata = MetaData()
-Session = sessionmaker(bind=engine, class_=AsyncSession, autocommit=False, autoflush=True)
-Base = declarative_base(metadata=metadata)
-
-
-async def create_session():
-    async with Session() as ses:
-        yield ses
-
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id = Column(String(100), primary_key=True)
-    username = Column(String(40), unique=True)
-    first_name = Column(String(40))
-    last_name = Column(String(40), nullable=True)
-    email = Column(String(50), unique=True)
-    password = Column(String(200))
-    last_login = Column(DateTime(timezone=True), server_default=func.now())
-    date_join = Column(DateTime(timezone=True), server_default=func.now())
-    is_superuser = Column(Boolean, default=False)
-    is_staff = Column(Boolean, default=False)
-
-    def as_dict(self) -> dict:
-        return {i.name: getattr(self, i.name) for i in self.__table__.columns}
-
-
-class Employee(Base):
-    __tablename__ = "employees"
-
-    id = Column(String(100), primary_key=True)
-    user_id = Column(String, ForeignKey("users.id"), unique=True)
-    salary = Column(Integer)
-    promotion_date = Column(DateTime(timezone=True))
-
-    def as_dict(self) -> dict:
-        return {i.name: getattr(self, i.name) for i in self.__table__.columns}
+from database.init import Session
+from database.models import Employee, User
 
 
 class BaseManager(ABC):
@@ -125,18 +78,6 @@ class EmployeeManager(BaseManager):
                 return employee
 
 
-async def create_db(local_engine: AsyncEngine):
-    """Create tables"""
-    async with local_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-async def drop_db(local_engine: AsyncEngine):
-    """Drop tables."""
-    async with local_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-
-
 async def create_superuser(username: str = "admin",
                            password: str = 'password'):
     session = Session()
@@ -153,13 +94,3 @@ async def create_superuser(username: str = "admin",
     async with Session() as session:
         session.add(superuser)
         await session.commit()
-
-
-if __name__ == '__main__':
-    # asyncio.run(create_db(engine))
-    # asyncio.run(drop_db(engine))
-    # asyncio.run(create_superuser(engine))
-    ...
-
-
-
