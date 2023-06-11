@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from internal.api import main_router, auth_router, employee_router
-from database.managers import create_superuser
+from database.dao import create_superuser
 
 
 def create_app() -> FastAPI:
@@ -20,13 +20,12 @@ def create_app() -> FastAPI:
     @app_.on_event("startup")
     async def on_startup():
         try:
-            await create_superuser()
+            create_superuser()
         except:     # Superuser exists
             pass
 
     @app_.on_event("shutdown")
     async def on_shutdown():
-        # await engine.dispose()
         ...
     return app_
 
