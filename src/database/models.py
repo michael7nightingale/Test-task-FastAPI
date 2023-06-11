@@ -7,6 +7,7 @@ from database.init import Base
 
 class User(Base):
     __tablename__ = 'users'
+    __mapper_args__ = {"eager_defaults": True}
 
     id = Column(String(100), primary_key=True)
     username = Column(String(40), unique=True)
@@ -26,6 +27,7 @@ class User(Base):
 
 class Employee(Base):
     __tablename__ = "employees"
+    __mapper_args__ = {"eager_defaults": True}
 
     id = Column(String(100), primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), unique=True)

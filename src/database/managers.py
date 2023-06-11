@@ -1,8 +1,7 @@
 from datetime import datetime
 from abc import ABC, abstractmethod
 from sqlalchemy import select
-# import os, sys
-# sys.path.append(os.getcwd())
+
 from package.hasher import verify_password, hash_password
 from package.auth import create_uuid
 from database.init import Session
@@ -32,7 +31,7 @@ class UserManager(BaseManager):
                     return user.as_dict()
 
     async def create(self, username: str, email: str, password: str,
-                       first_name: str, last_name: str, *args, **kwargs) -> dict:
+                     first_name: str, last_name: str, *args, **kwargs) -> dict:
         new_user = User(
             id=create_uuid(),
             username=username,
@@ -80,7 +79,6 @@ class EmployeeManager(BaseManager):
 
 async def create_superuser(username: str = "admin",
                            password: str = 'password'):
-    session = Session()
     superuser = User(
         id=create_uuid(),
         username=username,
