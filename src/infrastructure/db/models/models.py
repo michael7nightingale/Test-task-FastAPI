@@ -1,7 +1,8 @@
 from sqlalchemy import (Column, Integer, DateTime, String,
                         Boolean, ForeignKey, func)
+from sqlalchemy.orm import DeclarativeBase
 
-from database.init import Base
+from src.infrastructure.db import Base
 
 
 class User(Base):
@@ -32,4 +33,3 @@ class Employee(Base):
 
     def as_dict(self) -> dict:
         return {i.name: getattr(self, i.name) for i in self.__table__.columns}
-
