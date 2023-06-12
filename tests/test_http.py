@@ -1,47 +1,45 @@
-import pytest
-from fastapi.testclient import TestClient
 import json
 
+import pytest
+import os, sys
+sys.path.append(os.getcwd())
 
-from conftest import client, app, drop_db, create_db, engine
-import asyncio
-from src.package.database import UserManager
-
-# asyncio.run(drop_db(engine))
-# asyncio.run(create_db(engine))
-um = UserManager()
-
-res = asyncio.run(um.all())
-print(res)
+from conftest import client, app, TestSession
+from src.database.managers import UserManager
 
 
-def setUp():
-    data = {"username": "michael7nightingale",
-            "email": "python@mail.ru",
-            'first_name': "Mick",
-            "last_name": "Jagger",
-            "password": "rammqueen123",
-            "is_superuser": True}
-    # print(json.dumps(data))
-    response = client.post(
-        url=app.url_path_for("register_user"),
-        content=json.dumps(data),
-        headers={}
+class TestHttp:
+    def test_homepage(self):
+        response = client.get(app.url_path_for('root'))
+        assert response.status_code == 200
 
-    )
-    return json.loads(response.text)
+    def test_register(self):
+        # user_data = {
+        #     "username": "postgres2007",
+        #     "password": "psw102938",
+        #     "first_name": "Oplasm",
+        #     "last_name": None,
+        #     "email": "sql@gmail.com"
+        # }
+        # response = client.post(
+        #     url=app.url_path_for('register_user'),
+        #     data=json.dumps(user_data)
+        # )
+        um = UserManager(TestSession)
+        assert um.all() == []
 
-# print(setUp())
+    def test_users_list_get_no_permissions(self):
+        response = client.get(app.url_path_for("users_list"))
+        assert response.status_code == 401
 
+    def test_employees_list_get_no_permissions(self):
+        response = client.get(app.url_path_for("employees_list"))
+        assert response.status_code == 401
 
-def test_homepage():
-    response = client.get(app.url_path_for('root'))
-    user = setUp()
-    assert user["username"] == 'michael7nightingale'
-    assert response.status_code == 200
+    def test_employee_create_no_permissions(self):
+        response = client.post(app.url_path_for('create_employee'))
+        assert response.status_code == 401
 
-
-def test_employees_list():
-    response = client.get(app.url_path_for("employees_list"))
-    assert response.status_code == 401
-
+    def test_employee_get_no_auth(self):
+        response = client.get(app.url_path_for('get_employee'))
+        assert response.status_code == 401
