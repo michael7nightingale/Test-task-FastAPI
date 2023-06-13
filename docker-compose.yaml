@@ -3,21 +3,24 @@ services:
   db:
     image: uselagoon/postgres-15
     container_name: db_app
-    command: -p 5435
-    expose:
-      - 5435
-    environment:
-      - PROD=1
+    # command: -p 5432
+    #expose:
+    #  - 5432:5432
+    ports:
+      - 12345:5432
+    #environment:
+     # - PROD=1
     env_file:
-      - .prod.env
+      - .dev.env
 
   app:
     build:
       context: .
     env_file:
-      - .prod.env
+      - .dev.env
     container_name: fastapi_app
     ports:
       - 8888:8000
     depends_on:
       - db
+    command: ['/fastapi_app/app.sh']

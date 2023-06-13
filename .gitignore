@@ -20,3 +20,7 @@ src/schemas/__pycache__
 
 tests/__pycache__
 .env
+.dev.env
+.prod.env
+.test.env
+
