@@ -33,13 +33,3 @@ sqlalchemy==2.0.15 ; python_version >= "3.11" and python_version < "4.0"
 starlette==0.27.0 ; python_version >= "3.11" and python_version < "4.0"
 typing-extensions==4.6.3 ; python_version >= "3.11" and python_version < "4.0"
 uvicorn==0.22.0 ; python_version >= "3.11" and python_version < "4.0"
-
-fastapi~=0.96.0
-starlette~=0.27.0
-SQLAlchemy~=2.0.15
-uvicorn~=0.22.0
-python-dotenv~=1.0.0
-passlib~=1.7.4
-pydantic~=1.10.9
-alembic~=1.11.1
-pytest~=7.3.1

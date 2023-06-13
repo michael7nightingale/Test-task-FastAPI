@@ -13,8 +13,8 @@ auth_router = APIRouter(prefix='/auth', tags=['Auth'])
 
 
 @auth_router.get("/all")
-async def users_list(user_repo: UserRepository = Depends(get_repository(UserRepository)),
-                     superuser: UserShow = Depends(get_current_user)):
+async def get_all_users(user_repo: UserRepository = Depends(get_repository(UserRepository)),
+                        superuser: UserShow = Depends(get_superuser)):
     users: list[User] = user_repo.all()
     return [u.as_dict() for u in users]
 

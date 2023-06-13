@@ -6,15 +6,17 @@ services:
     command: -p 5435
     expose:
       - 5435
+    environment:
+      - PROD=1
     env_file:
-      - .env-non-dev
+      - .prod.env
 
   app:
     build:
       context: .
     env_file:
-      - .env-non-dev
-    container_name: employees_app
+      - .prod.env
+    container_name: fastapi_app
     ports:
       - 8888:8000
     depends_on:

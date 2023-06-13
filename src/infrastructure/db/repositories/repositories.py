@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import delete
 
 from src.infrastructure.db.models.models import User, Employee
 from src.infrastructure.db.repositories.base import BaseRepository
@@ -6,6 +7,7 @@ from src.schemas.user import UserShow, UserLogin, UserRegister
 from src.schemas.employee import EmployeeShow, EmployeeInDb
 
 from src.package.hasher import hash_password, verify_password
+from src.package.auth import create_uuid
 
 
 class UserRepository(BaseRepository):
@@ -14,6 +16,7 @@ class UserRepository(BaseRepository):
 
     def create(self, user_schema: UserRegister):
         user = self._model(
+            id=create_uuid(),
             username=user_schema.username,
             password=hash_password(user_schema.password),
             email=user_schema.email,
@@ -40,8 +43,10 @@ class EmployeeRepository(BaseRepository):
         return self.filter(user_id=user_id)
 
     def create(self, employee_schema: EmployeeInDb) -> Employee:
+        print(employee_schema)
         employee = self._model(
-            user_id=employee_schema.user_id,
+            id=create_uuid(),
+            user_id=str(employee_schema.user_id),
             salary=employee_schema.salary,
             promotion_date=employee_schema.promotion_date
         )

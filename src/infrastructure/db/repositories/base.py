@@ -33,6 +33,11 @@ class BaseRepository:
         self._session.execute(query)
         self.commit()
 
+    def clear(self) -> None:
+        query = delete(self._model)
+        self._session.execute(query)
+        self.commit()
+
     def commit(self):
         self._session.commit()
 

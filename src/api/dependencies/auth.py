@@ -7,8 +7,10 @@ from src.api.dependencies.database import get_repository
 from src.package.auth import decode_access_token
 from src.schemas.user import UserLogin, UserShow
 
+from src.api.responses import AuthDetail
 
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token/")
+
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
 async def get_current_user(token: str = Depends(oauth_scheme)) -> UserShow:
@@ -24,11 +26,11 @@ async def login_current_user(user_repo: UserRepository = Depends(get_repository(
         user = user_repo.login(user_form)
         return user
     except AttributeError:
-        raise HTTPException(status_code=403, detail="Login data is not valid")
+        raise HTTPException(status_code=403, detail=AuthDetail.login_data_error.value)
 
 
 async def get_superuser(user: UserShow = Depends(get_current_user)):
     """Checks if current user is superuser"""
     if not user.is_superuser:
-        raise HTTPException(status_code=403, detail="No permissions to watch this data.")
+        raise HTTPException(status_code=403, detail=AuthDetail.no_permissions.value)
     return user
