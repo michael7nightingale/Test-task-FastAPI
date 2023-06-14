@@ -99,26 +99,29 @@ SUPERUSER_EMAIL=suslanchikmopl@gmail.com
 
 Run it with the python file by:
 ```commandline
-python run.py
+cd src
+python main.py
 ```
 
 ...or by uvicorn 
 ```commandline
-uvicorn run:app --reload
+cd src
+uvicorn main:app --reload
 ```
 
 ## Tests
  Tests are provided to test all application work. Pytest is used.
 
 ```commandline
+cd src
 pytest tests
 ```
 
 ## Pycharm using
 
 If you use Pycharm, please make sure that your working directory
-is correct. It should be the `ROOT DIRECTORY`.
+is correct. It should be the `src`. The same in terminal.
 
-![MarineGEO circle logo](/files/pycharm_example.jpg)
+
 
 
