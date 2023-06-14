@@ -8,6 +8,7 @@ class UserLogin(BaseModel):
 
 
 class UserShow(BaseModel):
+    """Schema for response"""
     id: str
     username: str
     first_name: str

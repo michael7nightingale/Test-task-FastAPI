@@ -5,8 +5,8 @@ from sqlalchemy.exc import IntegrityError, PendingRollbackError
 
 from src.api.dependencies.database import get_repository
 from src.api.dependencies.auth import get_current_user, get_superuser
-from src.infrastructure.db.repositories.repositories import EmployeeRepository
-from src.infrastructure.db.models.models import Employee
+from src.infrastructure.db.repositories import EmployeeRepository
+from src.infrastructure.db.models import Employee
 
 from src.schemas.user import UserShow
 from src.schemas.employee import EmployeeInDb, EmployeeShow

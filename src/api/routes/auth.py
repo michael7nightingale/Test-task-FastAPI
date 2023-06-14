@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Body, Depends
-from starlette.exceptions import HTTPException
 
 from src.package.auth import create_access_token
 from src.api.dependencies.auth import login_current_user, get_current_user, get_superuser
-from src.infrastructure.db.repositories.repositories import UserRepository
+from src.infrastructure.db.repositories import UserRepository
 from src.api.dependencies.database import get_repository
 from src.schemas.user import UserShow, UserRegister
-from src.infrastructure.db.models.models import User
+from src.infrastructure.db.models import User
 
 
 auth_router = APIRouter(prefix='/auth', tags=['Auth'])
@@ -15,6 +14,7 @@ auth_router = APIRouter(prefix='/auth', tags=['Auth'])
 @auth_router.get("/all")
 async def get_all_users(user_repo: UserRepository = Depends(get_repository(UserRepository)),
                         superuser: UserShow = Depends(get_superuser)):
+    """Get list of all registered users. Only for superuser."""
     users: list[User] = user_repo.all()
     return [u.as_dict() for u in users]
 

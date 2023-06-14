@@ -4,5 +4,6 @@ from enum import Enum
 
 
 class MainDetail(Enum):
+    """Details for HTTPException on main router."""
     ...
 
