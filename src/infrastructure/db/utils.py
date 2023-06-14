@@ -1,9 +1,9 @@
-from src.infrastructure.db.models.models import User
-from src.package.auth import create_uuid
-from src.package.hasher import hash_password
+from api.auth.db.models import User
+from infrastructure.utils.auth import create_uuid
+from infrastructure.utils.hasher import hash_password
 from sqlalchemy.exc import IntegrityError
 
-from src.config import get_app_settings
+from config import get_app_settings
 
 
 def create_superuser(pool):

@@ -24,7 +24,7 @@ class Settings(BaseSettings):
         elif os.getenv("PROD"):
             env_file = ".prod.env"
         else:
-            env_file = '.dev.env'
+            env_file = '../.dev.env'
         # env_file = '.dev.env'
 
 
