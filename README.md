@@ -107,12 +107,39 @@ python run.py
 uvicorn run:app --reload
 ```
 
-## Tests
+## Tests (integrational)
  Tests are provided to test all application work. Pytest is used.
+ 
+```commandline
+pip install -r dev-requirements.txt
+```
 
+Fill .test.env file with your variables.
+```.dotenv
+#.test.env file
+
+DB_NAME=employees_test
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=password
+
+SECRET_KEY=1239ajncoikjaj123as0dnc
+
+SUPERUSER_NAME=admin
+SUPERUSER_PASSWORD=password
+SUPERUSER_EMAIL=suslanchikmopl@gmail.com
+```
+
+Run tests.
 ```commandline
 pytest tests
 ```
+ or 
+ ```commandline
+ pytest
+ ```
+
 
 ## Pycharm using
 
