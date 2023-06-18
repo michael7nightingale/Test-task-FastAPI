@@ -19,7 +19,7 @@ employees_router = APIRouter(prefix='/employees', tags=["Employees"])
 
 @employees_router.get("/all")
 async def get_all_employees(employee_repo: EmployeeRepository = Depends(get_repository(EmployeeRepository)),
-                         superuser: UserShow = Depends(get_superuser)):
+                            superuser: UserShow = Depends(get_superuser)):
     """Shows all employees to superuser."""
     employees: list[Employee] = employee_repo.all()
     return [e.as_dict() for e in employees]

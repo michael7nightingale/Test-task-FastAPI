@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class AuthDetail(Enum):
+class AuthDetail(StrEnum):
     """Details for HTTPException on auth router."""
     user_not_found = "User with such data is not found."
     not_authenticated = "You are not authenticated."

@@ -12,9 +12,9 @@ def create_app() -> FastAPI:
     I wanted to write a class, but function is enough.
     """
     import os
-    print(os.environ.get("TEST"), os.environ.get("PROD"))
+    # print(os.environ.get("TEST"), os.environ.get("PROD"))
     settings = get_app_settings()
-    print(f"Settings: {settings}")
+    # print(f"Settings: {settings}")
     app_ = FastAPI()
     routers = (main_router, auth_router, employees_router)
     for router in routers:

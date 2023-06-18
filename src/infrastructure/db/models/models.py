@@ -1,11 +1,18 @@
 from sqlalchemy import (Column, Integer, DateTime, String,
-                        Boolean, ForeignKey, func)
-from sqlalchemy.orm import DeclarativeBase
+                        Boolean, ForeignKey, func, Table)
 
 from src.infrastructure.db import Base
 
 
-class User(Base):
+class TableMixin:
+    """For getting dict object of the model."""
+    __table__: Table
+
+    def as_dict(self):
+        return {i.name: getattr(self, i.name) for i in self.__table__.columns}
+
+
+class User(Base, TableMixin):
     __tablename__ = 'users'
 
     id = Column(String(100), primary_key=True)
@@ -19,17 +26,11 @@ class User(Base):
     is_superuser = Column(Boolean, default=False)
     is_staff = Column(Boolean, default=False)
 
-    def as_dict(self) -> dict:
-        return {i.name: getattr(self, i.name) for i in self.__table__.columns}
 
-
-class Employee(Base):
+class Employee(Base, TableMixin):
     __tablename__ = "employees"
 
     id = Column(String(100), primary_key=True)
     user_id = Column(String, ForeignKey("users.id"), unique=True)
     salary = Column(Integer)
     promotion_date = Column(DateTime(timezone=True))
-
-    def as_dict(self) -> dict:
-        return {i.name: getattr(self, i.name) for i in self.__table__.columns}

@@ -23,4 +23,4 @@ services:
       - 8888:8000
     depends_on:
       - db
-    command: ['/fastapi_app/app.sh']
+    command: ['alembic', "upgrade", "head"]

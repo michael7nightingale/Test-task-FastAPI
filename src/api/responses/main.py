@@ -1,9 +1,7 @@
-from enum import Enum
-
-# there is no details for main router
+from enum import StrEnum
 
 
-class MainDetail(Enum):
+class MainDetail(StrEnum):
     """Details for HTTPException on main router."""
-    ...
+    greeting = "Service is running if you see this page"
 

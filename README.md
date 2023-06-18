@@ -122,3 +122,11 @@ is correct. It should be the `ROOT DIRECTORY`.
 ![MarineGEO circle logo](/files/pycharm_example.jpg)
 
 
+## Docker 
+I wish this works. My Docker Desktop does not want to work.
+
+```commandline
+docker build . -t fastapi_app:latest
+docker run -d -p fastapi_app
+docker compose up
+```

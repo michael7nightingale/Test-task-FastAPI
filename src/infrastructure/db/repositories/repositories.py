@@ -11,21 +11,17 @@ from src.package.auth import create_uuid
 
 
 class UserRepository(BaseRepository):
+    """
+    Repository for User model
+    """
     def __init__(self, session: Session):
-        super().__init__(User, session)
+        super().__init__(User, session)   # note: model is prescribed
 
     def create(self, user_schema: UserRegister):
-        user = self._model(
-            id=create_uuid(),
-            username=user_schema.username,
-            password=hash_password(user_schema.password),
-            email=user_schema.email,
-            first_name=user_schema.first_name,
-            last_name=user_schema.last_name
-        )
-        self.add(user)
-        self.commit()
-        return user
+        """Register method"""
+        user_schema.password = hash_password(user_schema.password)
+        new_user = super().create(**user_schema.dict())
+        return new_user
 
     def login(self, user_schema: UserLogin) -> User:
         user = self.filter(username=user_schema.username)
@@ -37,20 +33,13 @@ class UserRepository(BaseRepository):
 
 class EmployeeRepository(BaseRepository):
     def __init__(self, session: Session):
-        super().__init__(Employee, session)
+        super().__init__(Employee, session)  # note: model is prescribed
 
     def get_by_user_id(self, user_id) -> Employee:
         return self.filter(user_id=user_id)
 
     def create(self, employee_schema: EmployeeInDb) -> Employee:
-        print(employee_schema)
-        employee = self._model(
-            id=create_uuid(),
-            user_id=str(employee_schema.user_id),
-            salary=employee_schema.salary,
-            promotion_date=employee_schema.promotion_date
-        )
-        self.add(employee)
-        self.commit()
-        return employee
+        """Create employee view"""
+        new_employee = super().create(**employee_schema.dict())
+        return new_employee
 

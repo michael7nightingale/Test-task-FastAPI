@@ -3,11 +3,11 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from starlette.exceptions import HTTPException
 
 from src.infrastructure.db.repositories.repositories import UserRepository
+from src.infrastructure.db.models import User
 from src.api.dependencies.database import get_repository
-from src.package.auth import decode_access_token
-from src.schemas.user import UserLogin, UserShow
-
 from src.api.responses import AuthDetail
+from src.package.auth import decode_access_token, create_access_token
+from src.schemas.user import UserLogin, UserShow
 
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -34,3 +34,9 @@ async def get_superuser(user: UserShow = Depends(get_current_user)):
     if not user.is_superuser:
         raise HTTPException(status_code=403, detail=AuthDetail.no_permissions.value)
     return user
+
+
+async def create_token(user_inst: User = Depends(login_current_user)) :
+    to_encode = UserShow(**user_inst.as_dict()).dict()
+    token = create_access_token(to_encode)
+    return token
